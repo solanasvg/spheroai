@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>sphere shader</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <style>
+        body { margin: 0; overflow: hidden;}
+    </style>
+</head>
+
+<body id="body">
+    <div id="WebGL-output"></div>
+  
+    <script id="vs" type="x-shader/x-vertex">
+			attribute float displacement;
+			varying vec3 vNormal;
+			varying vec2 vUv;
+			uniform float textureAmplitude;
+
+			void main() {
+        
+				vec3 tempPos = position + normal * vec3(displacement);
+				gl_Position = projectionMatrix * modelViewMatrix * vec4( tempPos, 1.0 );
+        
+				vNormal = normal;
+        
+				vUv = uv + vec2( textureAmplitude );
+        
+			}
+		</script>
+
+		<script id="fs" type="x-shader/x-fragment">
+			uniform vec3 color;
+			uniform sampler2D texture;
+			varying vec3 vNormal;
+			varying vec2 vUv;
+
+			void main() {
+
+				vec3 lightPos = vec3( 1.0, 1.0, 0.0 );
+				lightPos = normalize( lightPos );
+
+				float brightness = dot( vNormal, lightPos ) * 0.5 + 0.5 + 0.3;
+
+				vec4 tcolor = texture2D( texture, vUv );
+
+				gl_FragColor =  brightness * tcolor * vec4( color, 1.0 );
+        
+			}
+		</script>
+  
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/90/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.90.0/examples/js/controls/OrbitControls.js"></script>
+</body>
+
+</html>
+<!-- partial -->
+  <script  src="./script.js"></script>
+
+</body>
+</html>
